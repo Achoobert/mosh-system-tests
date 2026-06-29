@@ -1,5 +1,5 @@
 {
-  "id": "mosh-system-tests",
+  "id": "mothership-system-tests",
   "title": "MoSh System Tests",
   "description": "Test suite to run Quench tests in game on the MoSh Mothership system",
   "authors": [

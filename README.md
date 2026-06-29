@@ -7,7 +7,7 @@ Quench + Cypress tests for the unofficial [foundry-mothership](https://github.co
 - Requires **Node.js >= 20.19**
 - Run `pnpm install`
 - Copy [`fvtt.config.example.js`](./fvtt.config.example.js) to `fvtt.config.js` and set `userDataPath` / `baseURL`
-- Run `pnpm run build` or `pnpm run watch` (outputs to Foundry `Data/modules/mosh-system-tests` when `userDataPath` exists, else `./build/`)
+- Run `pnpm run build` or `pnpm run watch` (outputs to Foundry `Data/modules/mothership-system-tests` when `userDataPath` exists, else `./build/`)
 - In Foundry: **MoSh** world, enable **Quench** and **MoSh System Tests**
 
 ## Running tests

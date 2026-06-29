@@ -1,5 +1,5 @@
 {
-  "name": "fvtt-mosh-system-tests",
+  "name": "fvtt-mothership-system-tests",
   "version": "0.0.0",
   "description": "Test suite to run Quench tests in game on the MoSh Mothership system",
   "scripts": {
