@@ -2,6 +2,11 @@
 
 Quench + Cypress tests for the unofficial [foundry-mothership](https://github.com/Achoobert/foundry-mothership) system (`mosh`).
 
+Install module:
+```
+https://github.com/Achoobert/mothership-system-tests/releases/download/v0.0.1/module.json
+```
+
 ## Setup
 
 - Requires **Node.js >= 20.19**
