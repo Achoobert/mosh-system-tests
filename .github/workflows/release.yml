@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: Build module
+        run: |
+          cp fvtt.config.example.js fvtt.config.js
+          pnpm run build
+
+      - name: Get Version
+        id: get_version
+        uses: dhkatz/get-version-action@v3.0.0
+
+      - name: Substitute manifest and download links
+        uses: TomaszKandula/variable-substitution@v1.0.1
+        with:
+          files: build/module.json
+        env:
+          version: ${{ steps.get_version.outputs.version-without-v }}
+          download: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.zip
+          manifest: https://github.com/${{ github.repository }}/releases/latest/download/module.json
+
+      - name: Zip
+        run: cd build && zip -r ../module.zip .
+
+      - name: Update Release with Artifacts
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          allowUpdates: true
+          name: ${{ github.event.release.name }}
+          tag: ${{ github.event.release.tag_name }}
+          body: ${{ github.event.release.body }}
+          artifacts: './module.zip, ./build/module.json'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+defaults:
+  run:
+    shell: bash

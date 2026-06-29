@@ -1,0 +1,35 @@
+{
+  "id": "mosh-system-tests",
+  "title": "MoSh System Tests",
+  "description": "Test suite to run Quench tests in game on the MoSh Mothership system",
+  "authors": [
+    {
+      "name": "Achoobert"
+    }
+  ],
+  "version": "0.0.1",
+  "url": "https://github.com/Achoobert/mosh-system-tests",
+  "manifest": "https://github.com/Achoobert/mosh-system-tests/releases/latest/download/module.json",
+  "download": "https://github.com/Achoobert/mosh-system-tests/releases/latest/download/module.zip",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "relationships": {
+    "requires": [
+      {
+        "id": "mosh",
+        "type": "system",
+        "reason": "Test suite for the MoSh Mothership system."
+      },
+      {
+        "id": "quench",
+        "type": "module",
+        "reason": "Process Tests powered by Mocha."
+      }
+    ]
+  },
+  "esmodules": [
+    "module.js"
+  ]
+}
