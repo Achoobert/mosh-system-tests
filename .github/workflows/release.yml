@@ -17,12 +17,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Install dependencies
         run: |
@@ -34,28 +34,43 @@ jobs:
           cp fvtt.config.example.js fvtt.config.js
           pnpm run build
 
-      - name: Get Version
-        id: get_version
-        uses: dhkatz/get-version-action@v3.0.0
+      - name: Resolve release metadata
+        id: release_meta
+        env:
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            tag="$RELEASE_TAG"
+            version="${tag#v}"
+            name="$RELEASE_NAME"
+          else
+            version=$(jq -r .version build/module.json)
+            tag="v${version}"
+            name="Release ${tag}"
+          fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
 
       - name: Substitute manifest and download links
-        uses: TomaszKandula/variable-substitution@v1.0.1
+        uses: microsoft/variable-substitution@v1 
         with:
           files: build/module.json
         env:
-          version: ${{ steps.get_version.outputs.version-without-v }}
-          download: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.zip
+          version: ${{ steps.release_meta.outputs.version }}
+          download: https://github.com/${{ github.repository }}/releases/download/${{ steps.release_meta.outputs.tag }}/module.zip
           manifest: https://github.com/${{ github.repository }}/releases/latest/download/module.json
 
       - name: Zip
         run: cd build && zip -r ../module.zip .
 
       - name: Update Release with Artifacts
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.20.0
         with:
           allowUpdates: true
-          name: ${{ github.event.release.name }}
-          tag: ${{ github.event.release.tag_name }}
+          name: ${{ steps.release_meta.outputs.name }}
+          tag: ${{ steps.release_meta.outputs.tag }}
           body: ${{ github.event.release.body }}
           artifacts: './module.zip, ./build/module.json'
           token: ${{ secrets.GITHUB_TOKEN }}
